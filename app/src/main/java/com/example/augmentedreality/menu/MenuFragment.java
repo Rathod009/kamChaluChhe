@@ -7,9 +7,10 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.example.augmentedreality.Modules.Doodler.Doodler;
-import com.example.augmentedreality.Modules.FaceFilter;
+import com.example.augmentedreality.Modules.FaceFilter.FaceFilter;
 import com.example.augmentedreality.Modules.FunMode.FunMode;
 import com.example.augmentedreality.Modules.ObjectPlacer.ObjectPlacer;
 import com.example.augmentedreality.R;
@@ -18,15 +19,17 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MenuFragment extends Fragment implements View.OnClickListener {
 
-    FloatingActionButton menuBtn, doodlerBtn, objectPlacerBtn, faceFilterBtn, funModeBtn;
-    Float translationY = 40f;
-    Boolean isMenuOpen = false;
-    View view;
-    FragmentTransaction transaction;
-    Doodler doodler;
-    ObjectPlacer objectPlacer;
-    FaceFilter faceFilter;
-    FunMode funMode;
+    private FloatingActionButton menuBtn, doodlerBtn, objectPlacerBtn, faceFilterBtn, funModeBtn;
+    private LinearLayout doodlerlayout,objectPlacerlayout,faceFilterlayout, funModelayout, menushowlayout;
+    private Float translationY = 40f;
+    private Boolean isMenuOpen = false;
+    private View view;
+    private FragmentTransaction transaction;
+    private Doodler doodler;
+    private ObjectPlacer objectPlacer;
+    private FaceFilter faceFilter;
+    private FunMode funMode;
+    private int px;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,18 +51,25 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
         faceFilterBtn = view.findViewById(R.id.faceFilter);
         funModeBtn = view.findViewById(R.id.funMode);
 
+        menushowlayout = view.findViewById(R.id.menushowlayout);
+        final float scale = this.getResources().getDisplayMetrics().density;
+        px = (int) (250 * scale + 0.5f);
+
+        doodlerlayout = view.findViewById(R.id.doodlerlayout);
+        objectPlacerlayout = view.findViewById(R.id.objectPlacerlayout);
+        faceFilterlayout = view.findViewById(R.id.faceFilterlayout);
+        funModelayout = view.findViewById(R.id.funmodelayout);
 
         //animation for menu icons
-        doodlerBtn.setAlpha(0f);
-        objectPlacerBtn.setAlpha(0f);
-        faceFilterBtn.setAlpha(0f);
-        funModeBtn.setAlpha(0f);
+        doodlerlayout.setAlpha(0f);
+        objectPlacerlayout.setAlpha(0f);
+        faceFilterlayout.setAlpha(0f);
+        funModelayout.setAlpha(0f);
 
-        doodlerBtn.setTranslationY(translationY);
-        objectPlacerBtn.setTranslationY(translationY);
-        faceFilterBtn.setTranslationY(translationY);
-        funModeBtn.setTranslationY(translationY);
-
+        doodlerlayout.setTranslationY(translationY);
+        objectPlacerlayout.setTranslationY(translationY);
+        faceFilterlayout.setTranslationY(translationY);
+        funModelayout.setTranslationY(translationY);
 
         menuBtn.setOnClickListener(this);
         doodlerBtn.setOnClickListener(this);
@@ -74,19 +84,34 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
 
         //to open menu with animations
         if(!isMenuOpen){
-            doodlerBtn.animate().translationY(0f).alpha(1f).setDuration(200).start();
-            objectPlacerBtn.animate().translationY(0f).alpha(1f).setDuration(200).start();
-            faceFilterBtn.animate().translationY(0f).alpha(1f).setDuration(200).start();
-            funModeBtn.animate().translationY(0f).alpha(1f).setDuration(200).start();
+
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) menushowlayout.getLayoutParams();
+            // Changes the height and width to the specified *pixels*
+            params.height = px;
+            menushowlayout.setLayoutParams(params);
+
+            doodlerlayout.animate().translationY(0f).alpha(1f).setDuration(200).start();
+            objectPlacerlayout.animate().translationY(0f).alpha(1f).setDuration(200).start();
+            faceFilterlayout.animate().translationY(0f).alpha(1f).setDuration(200).start();
+            funModelayout.animate().translationY(0f).alpha(1f).setDuration(200).start();
             menuBtn.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(),R.drawable.close));
+
+
         }
         //to close menu with animations
         else{
-            doodlerBtn.animate().translationY(translationY).alpha(0f).setDuration(200).start();
-            objectPlacerBtn.animate().translationY(translationY).alpha(0f).setDuration(200).start();
-            faceFilterBtn.animate().translationY(translationY).alpha(0f).setDuration(200).start();
-            funModeBtn.animate().translationY(translationY).alpha(0f).setDuration(200).start();
+
+            doodlerlayout.animate().translationY(translationY).alpha(0f).setDuration(200).start();
+            objectPlacerlayout.animate().translationY(translationY).alpha(0f).setDuration(200).start();
+            faceFilterlayout.animate().translationY(translationY).alpha(0f).setDuration(200).start();
+            funModelayout.animate().translationY(translationY).alpha(0f).setDuration(200).start();
             menuBtn.setImageDrawable(ContextCompat.getDrawable(getActivity().getApplicationContext(),R.drawable.menu_icon));
+
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) menushowlayout.getLayoutParams();
+            // Changes the height and width to the specified *pixels*
+            params.height = 1;
+            menushowlayout.setLayoutParams(params);
+
         }
 
 
@@ -106,7 +131,7 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.doodler:
 //                if(doodler == null)
-                    doodler = new Doodler();
+                doodler = new Doodler();
                 transaction.replace(R.id.host, doodler);
                 transaction.commit();
                 menuChange();
@@ -114,21 +139,21 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
 
             case R.id.objectPlacer:
 //                if(objectPlacer == null)
-                    objectPlacer = new ObjectPlacer();
+                objectPlacer = new ObjectPlacer();
                 transaction.replace(R.id.host, objectPlacer);
                 transaction.commit();
                 menuChange();
                 break;
             case R.id.faceFilter:
 //                if(faceFilter == null)
-                    faceFilter = new FaceFilter();
+                faceFilter = new FaceFilter();
                 transaction.replace(R.id.host, faceFilter);
                 transaction.commit();
                 menuChange();
                 break;
             case R.id.funMode:
 //                if(funMode == null)
-                    funMode = new FunMode();
+                funMode = new FunMode();
                 transaction.replace(R.id.host, funMode);
                 transaction.commit();
                 menuChange();
