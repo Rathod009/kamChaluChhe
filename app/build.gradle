@@ -50,23 +50,3 @@ dependencies {
 
 
 
-
-
-
-
-sceneform.asset('sampledata/coffee.obj',
-        'default',
-        'sampledata/coffee.sfa',
-        'src/main/res/raw/coffee')
-
-
-
-sceneform.asset('sampledata/Hamburger.obj',
-        'default',
-        'sampledata/Hamburger.sfa',
-        'src/main/res/raw/Hamburger')
-
-sceneform.asset('sampledata/model.obj',
-        'default',
-        'sampledata/model.sfa',
-        'src/main/res/raw/model')
