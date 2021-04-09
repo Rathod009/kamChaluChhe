@@ -16,13 +16,13 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="5dp"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="30dp"
-            android:text="You should to kill X object in minimum time"
+            android:layout_marginTop="15dp"
+            android:gravity="left"
+            android:padding="5dp"
+            android:text="Instruction:\n1.CreamHotAirBalloon are our enemy\n2.BlueHotBalloons are our friend\n3.Enemy kill : +10\n4.Friend kill : -15"
             android:textColor="@color/white"
-            android:textSize="30dp" />
+            android:textSize="20dp" />
 
         <Button
             android:id="@+id/btnStart"

@@ -2,10 +2,8 @@ package com.example.augmentedreality.Modules.FaceFilter;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.CamcorderProfile;
@@ -16,17 +14,14 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.PixelCopy;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.augmentedreality.R;
 import com.google.ar.core.AugmentedFace;
 import com.google.ar.core.Frame;
@@ -34,7 +29,6 @@ import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.rendering.Texture;
 import com.google.ar.sceneform.ux.AugmentedFaceNode;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -51,7 +45,6 @@ import java.util.Map;
 public class FaceFilter extends AppCompatActivity {
 
     private static ModelRenderable modelRenderable;
-    private static Texture texture;
     public static boolean isAdded = false;
     private static Context context;
     private RelativeLayout filtermenulayout;
@@ -70,7 +63,6 @@ public class FaceFilter extends AppCompatActivity {
     static AugmentedFaceNode augmentedFaceNode;
 
     private static int counterformenu=0;
-    private static int counterforbuttons=0;
 
     private static ArrayList<Integer> filtersfb = new ArrayList<Integer>();
     private static ArrayList<Integer> mImageUrls = new ArrayList<>();
@@ -90,7 +82,6 @@ public class FaceFilter extends AppCompatActivity {
 
         counterformenu=0;
         filtermenulayout = findViewById(R.id.relativelayoutfiltermenu);
-        //filtermenulayout.getLayoutParams().height=px;
 
         // get menu button
         menu = findViewById(R.id.filtermenu);
@@ -105,8 +96,6 @@ public class FaceFilter extends AppCompatActivity {
         rec1 = MediaPlayer.create(context,R.raw.beep2);
         rec2 = MediaPlayer.create(context,R.raw.beep1);
         recordercardview = findViewById(R.id.recordercardview);
-        //recordercardview.setVisibility(View.INVISIBLE);
-        //setrecinvisibility();
 
         // get Camera click button
         cameraclick = (Button) findViewById(R.id.imagebuttoncamera);
@@ -253,8 +242,6 @@ public class FaceFilter extends AppCompatActivity {
 
     private void initRecyclerView(){
 
-        //Toast.makeText(context,"initRecyclerview",Toast.LENGTH_SHORT).show();
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         RecyclerView recyclerView = findViewById(R.id.recyclerViewfilter);
         recyclerView.setLayoutManager(layoutManager);
@@ -271,7 +258,7 @@ public class FaceFilter extends AppCompatActivity {
         if(counterformenu%2==1)
         {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) filtermenulayout.getLayoutParams();
-// Changes the height and width to the specified *pixels*
+            // Changes the height and width to the specified *pixels*
             params.height = px;
             filtermenulayout.setLayoutParams(params);
 
@@ -280,7 +267,7 @@ public class FaceFilter extends AppCompatActivity {
         else
         {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) filtermenulayout.getLayoutParams();
-// Changes the height and width to the specified *pixels*
+            // Changes the height and width to the specified *pixels*
             params.height = 1;
             filtermenulayout.setLayoutParams(params);
 
@@ -314,8 +301,7 @@ public class FaceFilter extends AppCompatActivity {
 
     private void takePhoto() {
         final String filename = generateFilename();
-        /*ArSceneView view = fragment.getArSceneView();*/
-        //mSurfaceView = findViewById(R.id.arfragmentfacefilter);
+
         // Create a bitmap the size of the scene view.
         final Bitmap bitmap = Bitmap.createBitmap(customARFragment.getArSceneView().getWidth(), customARFragment.getArSceneView().getHeight(),
                 Bitmap.Config.ARGB_8888);
@@ -335,20 +321,6 @@ public class FaceFilter extends AppCompatActivity {
                     toast.show();
                     return;
                 }
-
-                /*Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content),
-                        "Photo saved", Snackbar.LENGTH_LONG);
-                snackbar.setAction("Open in Photos", v -> {
-                    File photoFile = new File(filename);
-                    Uri photoURI = FileProvider.getUriForFile(this,
-                            this.getPackageName() + ".ar.codelab.name.provider",
-                            photoFile);
-                    Intent intent = new Intent(Intent.ACTION_VIEW, photoURI);
-                    intent.setDataAndType(photoURI, "image/*");
-                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivity(intent);
-                });
-                snackbar.show();*/
 
             } else {
                 Log.d("DrawAR", "Failed to copyPixels: " + copyResult);

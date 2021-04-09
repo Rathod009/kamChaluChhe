@@ -3,9 +3,6 @@ package com.example.augmentedreality.Modules.ObjectPlacer;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -78,8 +75,8 @@ public class ObjectPlacer extends AppCompatActivity implements View.OnClickListe
     private void initSFBData() {
         objectCycleSFB = new ArrayList<>();
 
-        objectCycleSFB.add("hamburger.sgb");
-        objectCycleSFB.add("model.sfb");
+        objectCycleSFB.add("ours.sfb");
+        objectCycleSFB.add("enemy.sfb");
         objectCycleSFB.add("flyingsacuer.sfb");
         objectCycleSFB.add("coffee.sfb");
         objectCycleSFB.add("hamburger.sfb");

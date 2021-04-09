@@ -50,11 +50,13 @@ dependencies {
 
 
 
-
-
-
-
-sceneform.asset('sampledata/fox_face.fbx',
+sceneform.asset('sampledata/CUPIC_AIRSHIP.obj',
         'default',
-        'sampledata/fox_face.sfa',
-        'src/main/res/raw/filter_foxface')
+        'sampledata/CUPIC_AIRSHIP.sfa',
+        'src/main/assets/enemy')
+
+
+sceneform.asset('sampledata/CUPIC_HOTAIRBALLOON.obj',
+        'default',
+        'sampledata/CUPIC_HOTAIRBALLOON.sfa',
+        'src/main/assets/ours')

@@ -8,6 +8,7 @@ import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.widget.Button;
 import android.widget.TextView;
@@ -32,9 +33,11 @@ public class FunMode extends AppCompatActivity {
     private ModelRenderable bulletRenderable;
     private boolean timerStarted = false;
     private int enemyLeft = 10;
+    private int score = 0;
     int second = 0;
     private Point point;
     private TextView enemyLeftTxt;
+    private TextView scoreTxt;
     private SoundPool soundPool;
     private int sound;
     private int soundBlast;
@@ -75,6 +78,7 @@ public class FunMode extends AppCompatActivity {
 
 
         enemyLeftTxt = findViewById(R.id.count);
+        scoreTxt = findViewById(R.id.score);
 
         //to load sound
         loadSoundPool();
@@ -122,9 +126,12 @@ public class FunMode extends AppCompatActivity {
         Node node = new Node();
         node.setRenderable(bulletRenderable);
         scene.addChild(node);
+        int enemyTemp = enemyLeft;
+        int scoreTemp = score;
         //playing sound on shooting!
         soundPool.play(sound, 0.8f,0.8f,1,0,1f);
         new Thread( () -> {
+
             for(int i =0 ; i < 200 ; i++){
                 int dist = i;
                 //background work
@@ -133,14 +140,26 @@ public class FunMode extends AppCompatActivity {
                     node.setWorldPosition(vector3);
                     //to check bullet is hit to enemy or not
                     Node nodeInContact = scene.overlapTest(node);
-                    if(nodeInContact != null){
-                        enemyLeft--;
-                        enemyLeftTxt.setText("Enemy Left : " +enemyLeft);
-                        scene.removeChild(node);
-                        scene.removeChild(nodeInContact);
-                        //sound when enemy is killed
-                        soundPool.play(soundBlast, 0.3f,0.3f,1,0,1f);
 
+                    if(nodeInContact != null){
+                        if(nodeInContact.getName().equals("Enemy")) {
+                            Log.d("NODE NAME", nodeInContact.getName());
+                            enemyLeft--;
+                            score+=10;
+                            scoreTxt.setText("Score : "+score);
+                            enemyLeftTxt.setText("Enemy Left : " + enemyLeft);
+                            scene.removeChild(nodeInContact);
+                            //sound when enemy is killed
+                            soundPool.play(soundBlast, 0.3f, 0.3f, 1, 0, 1f);
+                        }
+
+                        else{
+                            score-=15;
+                            scoreTxt.setText("Score : "+score);
+                            scene.removeChild(nodeInContact);
+                            //sound when killed
+                            soundPool.play(soundBlast, 0.3f, 0.3f, 1, 0, 1f);
+                        }
                     }
                 });
                 try {
@@ -148,9 +167,14 @@ public class FunMode extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
+                //to get out of this loop when we hit something
+                if(enemyTemp != enemyLeft || scoreTemp != score)
+                    break;
             }
             this.runOnUiThread( () -> scene.removeChild(node));
         }).start();
+
 
 
         if(enemyLeft == 0){
@@ -159,8 +183,12 @@ public class FunMode extends AppCompatActivity {
             dialogEnd.setCanceledOnTouchOutside(false);
             dialogEnd.setContentView(R.layout.popupend);
             Button btnRestart = dialogEnd.findViewById(R.id.btnRestart);
-            TextView score = dialogEnd.findViewById(R.id.score);
-            score.setText("Time Taken\n" +second/60 + ":" + second%60);
+            TextView time = dialogEnd.findViewById(R.id.Time);
+            TextView scoreView = dialogEnd.findViewById(R.id.score);
+
+            time.setText("Time Taken\n"+second/60 + ":" + second%60);
+            scoreView.setText("Score\n"+score);
+
             btnRestart.setOnClickListener(v -> {
                 startTimer();
                 timerStarted = true;
@@ -170,6 +198,8 @@ public class FunMode extends AppCompatActivity {
             });
 
         }
+
+
     }
 
     private void startTimer() {
@@ -212,11 +242,35 @@ public class FunMode extends AppCompatActivity {
 
         ModelRenderable
                 .builder()
-                .setSource(this, Uri.parse("flyingsacuer.sfb"))
+                .setSource(this, Uri.parse("enemy.sfb"))
                 .build()
                 .thenAccept( renderable -> {
                     for(int i = 0 ; i < 10 ; i++) {
                         Node node = new Node();
+                        node.setName("Enemy");
+                        //random node setting
+                        node.setRenderable(renderable);
+
+                        Random random = new Random();
+                        int x = random.nextInt(10);
+                        int y = random.nextInt(10);
+                        int z = random.nextInt(26);
+                        z = -z;
+
+                        node.setWorldPosition(new Vector3((float) x, (float) y / 10f, (float) z));
+                        node.setLocalRotation(Quaternion.axisAngle(new Vector3(0,1f,0),230));
+                        scene.addChild(node);
+                    }
+                });
+
+        ModelRenderable
+                .builder()
+                .setSource(this, Uri.parse("ours.sfb"))
+                .build()
+                .thenAccept( renderable -> {
+                    for(int i = 0 ; i < 10 ; i++) {
+                        Node node = new Node();
+                        node.setName("Ours");
                         //random node setting
                         node.setRenderable(renderable);
 

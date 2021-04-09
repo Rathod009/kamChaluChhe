@@ -18,7 +18,7 @@ import java.util.List;
 public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.ViewHolder> {
     private List<Integer> imageObject;
     private List<ViewHolder> viewholderlist = new ArrayList<>();
-    public static int counter=0;
+    public static int counter = 0;
     private Context mContext;
 
     public RecycleViewAdapter(Context context, List<Integer> imageObject)
