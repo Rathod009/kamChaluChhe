@@ -7,8 +7,6 @@
     tools:context=".Modules.FunMode.FunMode">
 
 
-
-
     <fragment
         android:id="@+id/arFragment"
         android:name="com.example.augmentedreality.Modules.FunMode.customFragment"
@@ -17,6 +15,7 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="35dp" />
 
+    <!--
     <fragment
         android:id="@+id/fragment"
         android:name="com.example.augmentedreality.menu.MenuFragment"
@@ -24,6 +23,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+        -->
 
     <TextView
         android:id="@+id/count"

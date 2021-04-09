@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -15,16 +17,15 @@ import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
-
 import java.util.ArrayList;
 
 public class ObjectPlacer extends AppCompatActivity implements View.OnClickListener{
 
     private ArFragment arFragment;
     private RecyclerView recyclerView;
-    private ArrayList<Integer> objectCycle;
+    private ArrayList<Integer> objectCycleImage;
+    private ArrayList<String> objectCycleSFB;
     private LinearLayoutManager linearLayoutManager;
-    private String s = "coffee.sfb";
 
 
     @Override
@@ -33,56 +34,87 @@ public class ObjectPlacer extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_object_placer);
         getSupportActionBar().hide();
 
-        initData();
+        //instance of ARFragment
+        arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.arFragment);
+
+        //instance of recycler view
+        recyclerView = findViewById(R.id.recyclerIcon);
+
+        //setting image data
+        initImageData();
+
+        //to set sfb data
+        initSFBData();
+
+        //iniatilazition of recycler view
         initRecyleView();
 
-        //Fetchting the instance of arFragment ID in XML
-        arFragment = (ArFragment)getSupportFragmentManager().findFragmentById(R.id.arFragment);
 
         //OnTap Action Listener
         arFragment.setOnTapArPlaneListener(((hitResult, plane, motionEvent) -> {
             //Crating an Anchor on location where user has tapped
             Anchor anchor = hitResult.createAnchor();
+
             ModelRenderable.builder()
-                    .setSource(this, Uri.parse(s))
+                    .setSource(this, Uri.parse(objectCycleSFB.get(RecycleViewAdapter.counter)))
                     .build()
-                    .thenAccept(modelRenderable -> addModelToScene(anchor, modelRenderable ));
+                    .thenAccept(modelRenderable -> addModelToScene(anchor, modelRenderable));
         }));
 
     }
 
-    private void initData() {
+    private void initImageData() {
 
-        objectCycle = new ArrayList<>();
-        objectCycle.add(R.drawable.burger);
-        objectCycle.add(R.drawable.oldcar);
-        objectCycle.add(R.drawable.ufo);
-        objectCycle.add(R.drawable.coffee);
-        objectCycle.add(R.drawable.burger);
-        objectCycle.add(R.drawable.oldcar);
-        objectCycle.add(R.drawable.ufo);
+        objectCycleImage = new ArrayList<>();
+        objectCycleImage.add(R.drawable.burger);
+        objectCycleImage.add(R.drawable.oldcar);
+        objectCycleImage.add(R.drawable.ufo);
+        objectCycleImage.add(R.drawable.coffee);
+        objectCycleImage.add(R.drawable.burger);
+        objectCycleImage.add(R.drawable.oldcar);
+        objectCycleImage.add(R.drawable.ufo);
 
     }
 
-    private void initRecyleView() {
-        recyclerView = findViewById(R.id.recyclerIcon);
-        linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        RecycleViewAdapter adapter = new RecycleViewAdapter(objectCycle);
-        recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+    private void initSFBData() {
+        objectCycleSFB = new ArrayList<>();
+
+        objectCycleSFB.add("hamburger.sgb");
+        objectCycleSFB.add("model.sfb");
+        objectCycleSFB.add("flyingsacuer.sfb");
+        objectCycleSFB.add("coffee.sfb");
+        objectCycleSFB.add("hamburger.sfb");
+        objectCycleSFB.add("model.sfb");
+        objectCycleSFB.add("flyingsacuer.sfb");
+
     }
+
+
 
     //Method to Render Model On Real World
-        private void addModelToScene(Anchor anchor, ModelRenderable modelRenderable) {
+    private void addModelToScene(Anchor anchor, ModelRenderable modelRenderable) {
+
         AnchorNode anchorNode = new AnchorNode(anchor);
+
+        //to move-resize it
         TransformableNode transformableNode = new TransformableNode((arFragment.getTransformationSystem()));
         transformableNode.setLocalScale(new Vector3(15f,15f,15f));
         transformableNode.setParent(anchorNode);
         transformableNode.setRenderable(modelRenderable);
         arFragment.getArSceneView().getScene().addChild(anchorNode);
         transformableNode.select();
+    }
+
+
+
+    private void initRecyleView() {
+
+        linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        RecycleViewAdapter adapter = new RecycleViewAdapter(this,objectCycleImage);
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     @Override

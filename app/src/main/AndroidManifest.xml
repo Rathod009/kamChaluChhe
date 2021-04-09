@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Modules.FunMode.FunMode"></activity>
-        <activity android:name=".Modules.FaceFilter" />
+        <activity android:name=".Modules.FaceFilter.FaceFilter" />
         <activity android:name=".Modules.Doodler.Doodler" />
         <activity android:name=".Modules.ObjectPlacer.ObjectPlacer" />
         <activity android:name=".SplashScreen.SplashScreen">
