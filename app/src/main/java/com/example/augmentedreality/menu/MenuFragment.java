@@ -53,8 +53,8 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
 
         menushowlayout = view.findViewById(R.id.menushowlayout);
         final float scale = this.getResources().getDisplayMetrics().density;
-        px = (int) (250 * scale + 0.5f);
-
+        px = (int) (270 * scale + 0.5f);
+        
         doodlerlayout = view.findViewById(R.id.doodlerlayout);
         objectPlacerlayout = view.findViewById(R.id.objectPlacerlayout);
         faceFilterlayout = view.findViewById(R.id.faceFilterlayout);

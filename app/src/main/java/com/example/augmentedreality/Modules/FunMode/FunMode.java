@@ -2,6 +2,7 @@ package com.example.augmentedreality.Modules.FunMode;
 
 import androidx.fragment.app.Fragment;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,14 +35,17 @@ public class FunMode extends Fragment {
     private Camera camera;
     private ModelRenderable bulletRenderable;
     private boolean timerStarted = false;
-    private  int enemyLeft = 10;
+    private int enemyLeft = 10;
+    int second = 0;
     private Point point;
     private TextView enemyLeftTxt;
     private SoundPool soundPool;
     private int sound;
     private int soundBlast;
     private View view;
-    private  customFragment arFragment;
+    private customFragment arFragment;
+    private Dialog dialogStart;
+    private Dialog dialogEnd;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,6 +67,16 @@ public class FunMode extends Fragment {
         scene = arFragment.getArSceneView().getScene();
         camera = scene.getCamera();
 
+        dialogStart = new Dialog(getActivity());
+        dialogStart.show();
+        dialogStart.setCanceledOnTouchOutside(false);
+        dialogStart.setContentView(R.layout.popupstart);
+        Button btnStart = dialogStart.findViewById(R.id.btnStart);
+        btnStart.setOnClickListener(v -> {
+                startTimer();
+                timerStarted = true;
+                dialogStart.dismiss();
+        });
 
         enemyLeftTxt = view.findViewById(R.id.count);
 
@@ -75,14 +89,7 @@ public class FunMode extends Fragment {
         buildBulletModel();
         Button shoot = view.findViewById(R.id.btnShoot);
 
-        shoot.setOnClickListener( v -> {
-            if(!timerStarted)
-            {
-                startTimer();
-                timerStarted = true;
-            }
-            shoot();
-        });
+        shoot.setOnClickListener( v -> shoot());
 
 
         return view;
@@ -127,12 +134,11 @@ public class FunMode extends Fragment {
                     Node nodeInContact = scene.overlapTest(node);
                     if(nodeInContact != null){
                         enemyLeft--;
-                        enemyLeftTxt.setText("UFO Left : " +enemyLeft);
+                        enemyLeftTxt.setText("Enemy Left : " +enemyLeft);
                         scene.removeChild(node);
                         scene.removeChild(nodeInContact);
                         //sound when enemy is killed
                         soundPool.play(soundBlast, 0.3f,0.3f,1,0,1f);
-
 
                     }
                 });
@@ -144,6 +150,25 @@ public class FunMode extends Fragment {
             }
             getActivity().runOnUiThread( () -> scene.removeChild(node));
         }).start();
+
+
+        if(enemyLeft == 0){
+            dialogEnd = new Dialog(getActivity());
+            dialogEnd.show();
+            dialogEnd.setCanceledOnTouchOutside(false);
+            dialogEnd.setContentView(R.layout.popupend);
+            Button btnRestart = dialogEnd.findViewById(R.id.btnRestart);
+            TextView score = dialogEnd.findViewById(R.id.score);
+            score.setText(second/60 + ":" + second%60);
+            btnRestart.setOnClickListener(v -> {
+                startTimer();
+                timerStarted = true;
+                addEnemyToScene();
+                enemyLeft = 10;
+                dialogEnd.dismiss();
+            });
+
+        }
     }
 
     private void startTimer() {
@@ -151,7 +176,7 @@ public class FunMode extends Fragment {
         TextView timer = view.findViewById(R.id.timer);
 
         new Thread( () -> {
-            int second = 0;
+            second = 0;
 
             while(enemyLeft > 0){
                 try {
@@ -164,10 +189,9 @@ public class FunMode extends Fragment {
                 int secondsPassed = second %60;
 
                 getActivity().runOnUiThread(
-                        ()-> timer.setText(minutesPassed + ":" + secondsPassed));
+                        ()-> timer.setText("Time Taken\n" +minutesPassed + ":" + secondsPassed));
             }
         }).start();
-
     }
 
     private void buildBulletModel() {
