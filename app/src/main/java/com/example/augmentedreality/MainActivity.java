@@ -13,10 +13,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().hide();
 
-        Intent objectPlacer = new Intent(MainActivity.this, Doodler.class);
-        startActivity(objectPlacer);
+        Intent Doodler = new Intent(MainActivity.this, Doodler.class);
+        startActivity(Doodler);
         finish();
     }
 }

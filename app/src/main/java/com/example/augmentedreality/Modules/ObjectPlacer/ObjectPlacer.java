@@ -32,7 +32,6 @@ public class ObjectPlacer extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_object_placer);
-        getSupportActionBar().hide();
 
         //instance of ARFragment
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.arFragment);

@@ -3,7 +3,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +47,7 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
 
         menushowlayout = view.findViewById(R.id.menushowlayout);
         final float scale = this.getResources().getDisplayMetrics().density;
-        px = (int) (250 * scale + 0.5f);
+        px = (int) (270 * scale + 0.5f);
 
         doodlerlayout = view.findViewById(R.id.doodlerlayout);
         objectPlacerlayout = view.findViewById(R.id.objectPlacerlayout);

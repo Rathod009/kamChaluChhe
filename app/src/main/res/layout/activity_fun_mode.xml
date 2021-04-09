@@ -15,15 +15,6 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="35dp" />
 
-    <!--
-    <fragment
-        android:id="@+id/fragment"
-        android:name="com.example.augmentedreality.menu.MenuFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-        -->
 
     <TextView
         android:id="@+id/count"
@@ -72,6 +63,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/arFragment"
         app:srcCompat="@drawable/funmode_icon" />
+
+    <fragment
+        android:id="@+id/fragment"
+        android:name="com.example.augmentedreality.menu.MenuFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@ package com.example.augmentedreality.Modules.FunMode;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.graphics.Point;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
@@ -26,23 +27,25 @@ import java.util.Random;
 
 public class FunMode extends AppCompatActivity {
 
-
     private Scene scene;
     private Camera camera;
     private ModelRenderable bulletRenderable;
     private boolean timerStarted = false;
-    private  int enemyLeft = 10;
+    private int enemyLeft = 10;
+    int second = 0;
     private Point point;
     private TextView enemyLeftTxt;
     private SoundPool soundPool;
     private int sound;
+    private int soundBlast;
+    private Dialog dialogStart;
+    private Dialog dialogEnd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fun_mode);
-        //actionbar hide
-        getSupportActionBar().hide();
+
 
         //to get display size
         Display display = getWindowManager().getDefaultDisplay();
@@ -57,6 +60,19 @@ public class FunMode extends AppCompatActivity {
         //to get camera scene
         scene = arFragment.getArSceneView().getScene();
         camera = scene.getCamera();
+
+        //start Popup
+        dialogStart = new Dialog(this);
+        dialogStart.show();
+        dialogStart.setCanceledOnTouchOutside(false);
+        dialogStart.setContentView(R.layout.popupstart);
+        Button btnStart = dialogStart.findViewById(R.id.btnStart);
+        btnStart.setOnClickListener(v -> {
+            startTimer();
+            timerStarted = true;
+            dialogStart.dismiss();
+        });
+
 
         enemyLeftTxt = findViewById(R.id.count);
 
@@ -80,7 +96,8 @@ public class FunMode extends AppCompatActivity {
 
     }
 
-    private void loadSoundPool() {
+    //setting sound pool
+    private void loadSoundPool(){
 
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -92,32 +109,38 @@ public class FunMode extends AppCompatActivity {
                 .setAudioAttributes(audioAttributes)
                 .build();
 
-        sound = soundPool.load(this,R.raw.assets_blop_sound,1);
+        sound = soundPool.load(this,R.raw.gunsound,1);
+        soundBlast = soundPool.load(this,R.raw.blast,1);
     }
 
-    private void shoot() {
 
-        //seting ray at center
+    //on shoot
+    private void shoot() {
+        //setting ray at center
         Ray ray = camera.screenPointToRay(point.x/2f, point.y/2f );
 
         Node node = new Node();
         node.setRenderable(bulletRenderable);
         scene.addChild(node);
-
+        //playing sound on shooting!
+        soundPool.play(sound, 0.8f,0.8f,1,0,1f);
         new Thread( () -> {
-            for(int i =0 ; i < 100 ; i++){
-                int finalI = i;
+            for(int i =0 ; i < 200 ; i++){
+                int dist = i;
                 //background work
-                runOnUiThread( () -> {
-                    Vector3 vector3 = ray.getPoint( finalI * 0.1f);
+                this.runOnUiThread( () -> {
+                    Vector3 vector3 = ray.getPoint( dist * 0.07f);
                     node.setWorldPosition(vector3);
                     //to check bullet is hit to enemy or not
                     Node nodeInContact = scene.overlapTest(node);
                     if(nodeInContact != null){
                         enemyLeft--;
-                        enemyLeftTxt.setText("UFO Left : " +enemyLeft);
+                        enemyLeftTxt.setText("Enemy Left : " +enemyLeft);
+                        scene.removeChild(node);
                         scene.removeChild(nodeInContact);
-                        soundPool.play(sound, 1f,1f,1,0,1f);
+                        //sound when enemy is killed
+                        soundPool.play(soundBlast, 0.3f,0.3f,1,0,1f);
+
                     }
                 });
                 try {
@@ -126,8 +149,27 @@ public class FunMode extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-            runOnUiThread( () -> scene.removeChild(node));
+            this.runOnUiThread( () -> scene.removeChild(node));
         }).start();
+
+
+        if(enemyLeft == 0){
+            dialogEnd = new Dialog(this);
+            dialogEnd.show();
+            dialogEnd.setCanceledOnTouchOutside(false);
+            dialogEnd.setContentView(R.layout.popupend);
+            Button btnRestart = dialogEnd.findViewById(R.id.btnRestart);
+            TextView score = dialogEnd.findViewById(R.id.score);
+            score.setText("Time Taken\n" +second/60 + ":" + second%60);
+            btnRestart.setOnClickListener(v -> {
+                startTimer();
+                timerStarted = true;
+                addEnemyToScene();
+                enemyLeft = 10;
+                dialogEnd.dismiss();
+            });
+
+        }
     }
 
     private void startTimer() {
@@ -135,7 +177,7 @@ public class FunMode extends AppCompatActivity {
         TextView timer = findViewById(R.id.timer);
 
         new Thread( () -> {
-            int second = 0;
+            second = 0;
 
             while(enemyLeft > 0){
                 try {
@@ -147,11 +189,10 @@ public class FunMode extends AppCompatActivity {
                 int minutesPassed = second/60;
                 int secondsPassed = second %60;
 
-                runOnUiThread(
+                this.runOnUiThread(
                         ()-> timer.setText(minutesPassed + ":" + secondsPassed));
             }
         }).start();
-
     }
 
     private void buildBulletModel() {
@@ -161,8 +202,8 @@ public class FunMode extends AppCompatActivity {
                 .thenAccept(texture -> {
                     MaterialFactory.makeOpaqueWithTexture(this,texture)
                             .thenAccept(material -> {
-                              bulletRenderable = ShapeFactory
-                                        .makeSphere(0.015f, new Vector3(0f,0f,0f),material);
+                                bulletRenderable = ShapeFactory
+                                        .makeSphere(0.013f, new Vector3(0f,0f,0f),material);
                             });
                 });
     }
@@ -171,11 +212,12 @@ public class FunMode extends AppCompatActivity {
 
         ModelRenderable
                 .builder()
-                .setSource(this, Uri.parse("flying sacuer.sfb"))
+                .setSource(this, Uri.parse("flyingsacuer.sfb"))
                 .build()
                 .thenAccept( renderable -> {
                     for(int i = 0 ; i < 10 ; i++) {
                         Node node = new Node();
+                        //random node setting
                         node.setRenderable(renderable);
 
                         Random random = new Random();
@@ -190,5 +232,4 @@ public class FunMode extends AppCompatActivity {
                     }
                 });
     }
-
 }

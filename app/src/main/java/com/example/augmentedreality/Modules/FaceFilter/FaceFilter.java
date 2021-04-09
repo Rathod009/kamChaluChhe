@@ -54,9 +54,6 @@ public class FaceFilter extends AppCompatActivity {
     private static Texture texture;
     public static boolean isAdded = false;
     private static Context context;
-
-    private View currentview;
-
     private RelativeLayout filtermenulayout;
     private Button menu;
     private Button cameraclick;
@@ -67,7 +64,6 @@ public class FaceFilter extends AppCompatActivity {
     private VideoRecorder videoRecorder;
     private CardView recordercardview;
     private Thread thread;
-
     private int px;
 
     private static CustomArFragment customARFragment;
@@ -86,18 +82,18 @@ public class FaceFilter extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_face_filter);
-        getSupportActionBar().hide();
+
 
         context = this;
         final float scale = this.getResources().getDisplayMetrics().density;
         px = (int) (90 * scale + 0.5f);
 
         counterformenu=0;
-        filtermenulayout = (RelativeLayout)currentview.findViewById(R.id.relativelayoutfiltermenu);
+        filtermenulayout = findViewById(R.id.relativelayoutfiltermenu);
         //filtermenulayout.getLayoutParams().height=px;
 
         // get menu button
-        menu = (Button)currentview.findViewById(R.id.filtermenu);
+        menu = findViewById(R.id.filtermenu);
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,12 +104,12 @@ public class FaceFilter extends AppCompatActivity {
         recordinganim = AnimationUtils.loadAnimation(context,R.anim.zoomout);
         rec1 = MediaPlayer.create(context,R.raw.beep2);
         rec2 = MediaPlayer.create(context,R.raw.beep1);
-        recordercardview = (CardView)currentview.findViewById(R.id.recordercardview);
+        recordercardview = findViewById(R.id.recordercardview);
         //recordercardview.setVisibility(View.INVISIBLE);
         //setrecinvisibility();
 
         // get Camera click button
-        cameraclick = (Button) currentview.findViewById(R.id.imagebuttoncamera);
+        cameraclick = (Button) findViewById(R.id.imagebuttoncamera);
         cameraclick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -260,7 +256,7 @@ public class FaceFilter extends AppCompatActivity {
         //Toast.makeText(context,"initRecyclerview",Toast.LENGTH_SHORT).show();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        RecyclerView recyclerView = currentview.findViewById(R.id.recyclerViewfilter);
+        RecyclerView recyclerView = findViewById(R.id.recyclerViewfilter);
         recyclerView.setLayoutManager(layoutManager);
         // creating class object
         RecyclerViewAdapterfilter adapter = new RecyclerViewAdapterfilter(context, mImageUrls);
@@ -366,7 +362,7 @@ public class FaceFilter extends AppCompatActivity {
 
     private void startTimer() {
 
-        TextView timer = currentview.findViewById(R.id.reccount);
+        TextView timer = findViewById(R.id.reccount);
 
         thread = new Thread(() -> {
             int second = 0;
